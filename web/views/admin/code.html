@@ -1,0 +1,66 @@
+<div class="panel-heading">
+{{if gt .GiftId 0}}
+    <a href="javascript:void(0);" data-toggle="modal" data-target="#myModal" 
+      style="height:18px; padding:6px;">导入奖品({{.GiftId}})的优惠券</a>
+    <a href="/admin/code/recache?id={{.GiftId}}" title="(有效编码数/缓存编码数)">
+        重整缓存中券的编码({{.CodeNum}}/{{.CacheNum}})</a>
+{{end}}
+    (总共 {{.Total}} 条记录)
+{{if ne .PagePrev ""}}<a href="/admin/code?gift_id={{.GiftId}}&page={{.PagePrev}}">上一页</a>{{end}}
+{{if ne .PageNext ""}}<a href="/admin/code?gift_id={{.GiftId}}&page={{.PageNext}}">下一页</a>{{end}}
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>奖品ID</th>
+        <th>优惠券</th>
+        <th>创建时间</th>
+        <th>更新时间</th>
+        <th>管理</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range $i, $data := .Datalist}}
+
+    <tr {{if eq $data.SysStatus 2}}class="warning"{{end}}>
+        <th scope="row">{{.Id}}</th>
+        <td><a href="/admin/code?gift_id={{.GiftId}}">{{$data.GiftId}}</a></td>
+        <td>{{$data.Code}}</td>
+        <td>{{FromUnixtime $data.SysCreated}}</td>
+        <td>{{FromUnixtime $data.SysUpdated}}</td>
+        <td>
+        {{if eq $data.SysStatus 0}}
+            <a href="/admin/code/delete?id={{.Id}}">删除</a>
+        {{else if eq $data.SysStatus 1}}
+            <a href="/admin/code/reset?id={{.Id}}">恢复</a>
+        {{else}}
+            已发放
+        {{end}}
+        </td>
+    </tr>
+
+    {{end}}
+    </tbody>
+</table>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="/admin/code/import?gift_id={{.GiftId}}" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">导入优惠券</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea name="codes" style="height:300px; width:100%;" placeholder="每行一个券"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">导入</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
