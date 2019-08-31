@@ -5,7 +5,7 @@ import (
 
 	"github.com/kataras/iris"
 
-	"imooc.com/lottery/bootstrap"
+	"iris项目/my_lottery/bootstrap"
 )
 
 // New returns a new handler which adds some headers and view data
